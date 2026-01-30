@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Product - Admin</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body style="background-color: #f1f5f9;">
+    <header>
+        <h1>Edit Product</h1>
+        <nav><a href="/admin/dashboard" style="color: var(--text-muted); text-decoration: none;">← Back to Dashboard</a>
+        </nav>
+    </header>
+
+    <div class="container" style="max-width: 600px;">
+        <div class="admin-form" style="padding: 2.5rem; margin-top: 2rem;">
+            <h2 style="margin-bottom: 2rem; color: var(--text-main);">Update Product Details</h2>
+            <form action="/admin/update-product/{{ product.id }}" method="post" enctype="multipart/form-data">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Product
+                            Name & Spec</label>
+                        <input type="text" name="name" value="{{ product.name }}" class="input-field" required>
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Quantity</label>
+                        <input type="number" name="qty" value="{{ product.qty or 1 }}" class="input-field" required>
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Base
+                            Rate (₹)</label>
+                        <input type="number" step="any" name="rate" value="{{ product.rate or 0 }}" class="input-field"
+                            required>
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Weight
+                            (Kg)</label>
+                        <input type="number" step="any" name="weight" value="{{ product.weight or 0 }}"
+                            class="input-field">
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Description</label>
+                        <textarea name="description" class="input-field" rows="2"
+                            required>{{ product.description }}</textarea>
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Front
+                            View (Upload / URL)</label>
+                        <input type="file" name="image_file" class="input-field" accept="image/*">
+                        <input type="text" name="image_url" value="{{ product.image_url }}" class="input-field">
+                    </div>
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Back
+                            View (Upload / URL)</label>
+                        <input type="file" name="back_image_file" class="input-field" accept="image/*">
+                        <input type="text" name="back_image_url" value="{{ product.back_image_url or '' }}"
+                            class="input-field">
+                    </div>
+                </div>
+
+                <div
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                    <div>
+                        <h4 style="margin-bottom: 1rem; color: var(--primary);">Invoice Specifications</h4>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; font-size: 0.75rem; color: var(--text-muted);">RC Rate/
+                                Kg</label>
+                            <input type="number" step="any" name="rc_rate_kg_invoice"
+                                value="{{ product.rc_rate_kg_invoice or 0 }}" class="input-field">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; font-size: 0.75rem; color: var(--text-muted);">Machining
+                                Cost</label>
+                            <input type="number" step="any" name="machining_cost_invoice"
+                                value="{{ product.machining_cost_invoice or 0 }}" class="input-field">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; font-size: 0.75rem; color: var(--text-muted);">Rate/
+                                Piece</label>
+                            <input type="number" step="any" name="rate_piece_invoice"
+                                value="{{ product.rate_piece_invoice or 0 }}" class="input-field">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; font-size: 0.75rem; color: var(--text-muted);">Selling
+                                Price</label>
+                            <input type="number" step="any" name="selling_price_invoice"
+                                value="{{ product.selling_price_invoice or 0 }}" class="input-field">
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 1rem; color: #64748b;">Non-Invoice Specifications</h4>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; font-size: 0.75rem; color: var(--text-muted);">RC Rate/
+                                Kg</label>
+                            <input type="number" step="any" name="rc_rate_kg_no_invoice"
+                                value="{{ product.rc_rate_kg_no_invoice or 0 }}" class="input-field">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; font-size: 0.75rem; color: var(--text-muted);">Machining
+                                Cost</label>
+                            <input type="number" step="any" name="machining_cost_no_invoice"
+                                value="{{ product.machining_cost_no_invoice or 0 }}" class="input-field">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; font-size: 0.75rem; color: var(--text-muted);">Rate/
+                                Piece</label>
+                            <input type="number" step="any" name="rate_piece_no_invoice"
+                                value="{{ product.rate_piece_no_invoice or 0 }}" class="input-field">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; font-size: 0.75rem; color: var(--text-muted);">Selling
+                                Price</label>
+                            <input type="number" step="any" name="selling_price_no_invoice"
+                                value="{{ product.selling_price_no_invoice or 0 }}" class="input-field">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Update Product</button>
+                    <a href="/admin/dashboard" class="btn"
+                        style="background: #e2e8f0; color: #475569; text-align: center; line-height: 1.5;">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">LAKSHMI METAL WORKS</div>
+            <div class="footer-address">
+                SF. No 16 (59/1) Athipalayam Road<br>
+                Chinnavedampatti, Coimbatore - 641049
+            </div>
+            <div class="footer-contact">
+                Office: 0422 - 4274216 / 8754980211 | Mobile: 9843410413
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

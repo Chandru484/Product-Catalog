@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - LAKSHMI METAL WORKS</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body
+    style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container" style="max-width: 450px; margin: 0;">
+        <div class="admin-form" style="padding: 3rem; border-radius: 20px;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 style="font-size: 1.75rem; color: var(--primary); margin-bottom: 0.5rem;">Join Us</h1>
+                <p style="color: var(--text-muted); font-size: 0.875rem;">Create a customer account to start shopping
+                </p>
+            </div>
+
+            {% if error %}
+            <div
+                style="background: #fee2e2; color: #dc2626; padding: 0.75rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.875rem; text-align: center; border: 1px solid #fecaca;">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form action="/signup" method="post">
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Full
+                        Name</label>
+                    <input type="text" name="full_name" placeholder="John Doe" class="input-field"
+                        style="margin-bottom: 0;" required>
+                </div>
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Email
+                        Address</label>
+                    <input type="email" name="email" placeholder="you@example.com" class="input-field"
+                        style="margin-bottom: 0;" required>
+                </div>
+                <div style="margin-bottom: 2rem;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Create
+                        Password</label>
+                    <div class="password-container">
+                        <input type="password" name="password" id="signup-password" placeholder="••••••••"
+                            class="input-field" style="margin-bottom: 0;" required>
+                        <span class="password-toggle" onclick="togglePassword('signup-password', this)">👁️</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; padding: 1rem;">Create Account</button>
+            </form>
+
+            <p style="text-align: center; margin-top: 2rem; font-size: 0.875rem; color: var(--text-muted);">
+                Already have an account? <a href="/login"
+                    style="color: var(--primary); font-weight: 600; text-decoration: none;">Sign in here</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(inputId, toggle) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.textContent = '🔒';
+            } else {
+                input.type = 'password';
+                toggle.textContent = '👁️';
+            }
+        }
+    </script>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">LAKSHMI METAL WORKS</div>
+            <div class="footer-address">
+                SF. No 16 (59/1) Athipalayam Road<br>
+                Chinnavedampatti, Coimbatore - 641049
+            </div>
+            <div class="footer-contact">
+                Office: 0422 - 4274216 / 8754980211 | Mobile: 9843410413
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

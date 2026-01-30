@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - LAKSHMI METAL WORKS</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <nav>
+            <a href="/admin/archive"
+                style="color: var(--primary); text-decoration: none; font-weight: 600; margin-right: 1.5rem;">View
+                Archive</a>
+            <a href="/home" style="color: var(--text-muted); text-decoration: none; font-weight: 600;">View Site</a>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="admin-form">
+            <h3>Add New Product</h3>
+            <form action="/admin/add-product" method="post" enctype="multipart/form-data">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <input type="text" name="name" placeholder="Product Name & Specification" class="input-field"
+                        required>
+                    <input type="number" name="qty" placeholder="Default Quantity" value="1" class="input-field"
+                        required>
+                    <input type="number" step="any" name="rate" placeholder="Base Rate per Piece" class="input-field"
+                        required>
+                    <input type="number" step="any" name="weight" placeholder="Weight (Kg)" class="input-field">
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-muted);">Front View Image</label>
+                        <input type="file" name="image_file" class="input-field" accept="image/*">
+                        <input type="text" name="image_url" placeholder="OR Front View Image URL" class="input-field">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-muted);">Back View Image</label>
+                        <input type="file" name="back_image_file" class="input-field" accept="image/*">
+                        <input type="text" name="back_image_url" placeholder="OR Back View Image URL"
+                            class="input-field">
+                    </div>
+                </div>
+
+                <textarea name="description" placeholder="Short Description" class="input-field" rows="2"
+                    required></textarea>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem;">
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-muted);">Invoice Details</label>
+                        <input type="number" step="any" name="rc_rate_kg_invoice" placeholder="RC Rate/Kg "
+                            class="input-field">
+                        <input type="number" step="any" name="machining_cost_invoice" placeholder="Machining Cost"
+                            class="input-field">
+                        <input type="number" step="any" name="rate_piece_invoice" placeholder="Rate/Piece"
+                            class="input-field">
+                        <input type="number" step="any" name="selling_price_invoice" placeholder="Selling Price"
+                            class="input-field">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; color: var(--text-muted);">Non-Invoice Details</label>
+                        <input type="number" step="any" name="rc_rate_kg_no_invoice" placeholder="RC Rate/Kg"
+                            class="input-field">
+                        <input type="number" step="any" name="machining_cost_no_invoice" placeholder="Machining Cost"
+                            class="input-field">
+                        <input type="number" step="any" name="rate_piece_no_invoice" placeholder="Rate/Piece"
+                            class="input-field">
+                        <input type="number" step="any" name="selling_price_no_invoice" placeholder="Selling Price"
+                            class="input-field">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Add
+                    Product</button>
+            </form>
+        </div>
+
+        <h3>Manage Products</h3>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Rate/Pc</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td><img src="{{ product.image_url }}" style="width: 50px; height: 50px; border-radius: 4px;"></td>
+                    <td>{{ product.name }}</td>
+                    <td>₹{{ "%.2f"|format(product.rate if product.rate else 0) }}</td>
+                    <td style="display: flex; gap: 0.5rem;">
+                        <a href="/admin/edit-product/{{ product.id }}" class="btn"
+                            style="background: #2563eb; color: white; padding: 0.5rem 1rem; text-decoration: none;">Edit</a>
+                        <form action="/admin/delete-product/{{ product.id }}" method="post" style="display:inline;">
+                            <button type="submit" class="btn"
+                                style="background:#ef4444; color:white; padding: 0.5rem 1rem;">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">LAKSHMI METAL WORKS</div>
+            <div class="footer-address">
+                SF. No 16 (59/1) Athipalayam Road<br>
+                Chinnavedampatti, Coimbatore - 641049
+            </div>
+            <div class="footer-contact">
+                Office: 0422 - 4274216 / 8754980211 | Mobile: 9843410413
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

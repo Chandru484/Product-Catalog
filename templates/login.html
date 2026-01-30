@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - LAKSHMI METAL WORKS</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .login-form-container {
+            display: none;
+        }
+
+        .login-form-container.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body
+    style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container" style="max-width: 450px; margin: 0;">
+        <div class="admin-form"
+            style="padding: 3rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.8); backdrop-filter: blur(10px);">
+            <div class="tabs">
+                <div class="tab active" id="customer-tab" onclick="switchTab('customer')">Customer</div>
+                <div class="tab" id="admin-tab" onclick="switchTab('admin')">Admin</div>
+            </div>
+
+            {% if error %}
+            <div
+                style="background: #fee2e2; color: #dc2626; padding: 0.75rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.875rem; text-align: center; border: 1px solid #fecaca;">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <!-- Customer Login Form -->
+            <div id="customer-form" class="login-form-container active">
+                <form action="/user/login" method="post">
+                    <div style="margin-bottom: 1.25rem;">
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Email
+                            Address</label>
+                        <input type="email" name="email" placeholder="you@example.com" class="input-field"
+                            style="margin-bottom: 0;" required>
+                    </div>
+                    <div style="margin-bottom: 2rem;">
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Password</label>
+                        <div class="password-container">
+                            <input type="password" name="password" id="customer-password" placeholder="••••••••"
+                                class="input-field" style="margin-bottom: 0;" required>
+                            <span class="password-toggle" onclick="togglePassword('customer-password', this)">👁️</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%; padding: 1rem;">Customer Sign
+                        In</button>
+                    <p style="text-align: center; margin-top: 1.5rem; font-size: 0.875rem; color: var(--text-muted);">
+                        New here? <a href="/signup"
+                            style="color: var(--primary); font-weight: 600; text-decoration: none;">Create an
+                            account</a>
+                    </p>
+                </form>
+            </div>
+
+            <!-- Admin Login Form -->
+            <div id="admin-form" class="login-form-container">
+                <form action="/admin/login" method="post">
+                    <div style="margin-bottom: 1.25rem;">
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Admin
+                            Username</label>
+                        <input type="text" name="username" placeholder="admin" class="input-field"
+                            style="margin-bottom: 0;" required>
+                    </div>
+                    <div style="margin-bottom: 2rem;">
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Admin
+                            Password</label>
+                        <div class="password-container">
+                            <input type="password" name="password" id="admin-password" placeholder="••••••••"
+                                class="input-field" style="margin-bottom: 0;" required>
+                            <span class="password-toggle" onclick="togglePassword('admin-password', this)">👁️</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                        style="width:100%; padding: 1rem; background: #334155;">Admin Sign In</button>
+                </form>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <p style="color: var(--text-muted); font-size: 0.875rem;">Join us and start shopping today.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(type) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.login-form-container').forEach(f => f.classList.remove('active'));
+
+            document.getElementById(type + '-tab').classList.add('active');
+            document.getElementById(type + '-form').classList.add('active');
+        }
+
+        function togglePassword(inputId, toggle) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.textContent = '🔒';
+            } else {
+                input.type = 'password';
+                toggle.textContent = '👁️';
+            }
+        }
+    </script>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">LAKSHMI METAL WORKS</div>
+            <div class="footer-address">
+                SF. No 16 (59/1) Athipalayam Road<br>
+                Chinnavedampatti, Coimbatore - 641049
+            </div>
+            <div class="footer-contact">
+                Office: 0422 - 4274216 / 8754980211 | Mobile: 9843410413
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

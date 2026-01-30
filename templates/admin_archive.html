@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Archive - LAKSHMI METAL WORKS</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body style="background-color: #f1f5f9;">
+    <header>
+        <h1>Product Archive</h1>
+        <nav>
+            <a href="/admin/dashboard" style="color: var(--text-muted); text-decoration: none; font-weight: 600;">← Back
+                to Dashboard</a>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="admin-table-container"
+            style="background: white; padding: 2rem; border-radius: 12px; box-shadow: var(--shadow);">
+            <h3>Archived Products</h3>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">These products are hidden from the store. You can
+                restore them at any time.</p>
+
+            {% if products %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Rate (₹)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td style="display: flex; align-items: center; gap: 1rem;">
+                            <img src="{{ product.image_url }}" alt=""
+                                style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                            <div>
+                                <div style="font-weight: 600;">{{ product.name }}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">{{ product.id }}</div>
+                            </div>
+                        </td>
+                        <td>{{ "%.2f"|format(product.rate) }}</td>
+                        <td>
+                            <form action="/admin/restore-product/{{ product.id }}" method="post"
+                                style="display: inline;">
+                                <button type="submit" class="btn btn-primary"
+                                    style="padding: 0.5rem 1rem; font-size: 0.875rem; background: #10b981;">Restore</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                <p>No archived products found.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">LAKSHMI METAL WORKS</div>
+            <div class="footer-address">
+                SF. No 16 (59/1) Athipalayam Road<br>
+                Chinnavedampatti, Coimbatore - 641049
+            </div>
+            <div class="footer-contact">
+                Office: 0422 - 4274216 / 8754980211 | Mobile: 9843410413
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

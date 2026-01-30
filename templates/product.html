@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }} - GadgetStore</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+
+<body>
+    <header>
+        <h1><a href="/home" style="text-decoration:none; color:inherit;">LAKSHMI METAL WORKS</a></h1>
+        <nav>
+            {% if request.cookies.get('admin_session') == 'authenticated' %}
+            <span style="margin-right: 1.5rem; color: var(--text-muted); font-size: 0.875rem;">Hi, Admin</span>
+            <a href="/admin/dashboard"
+                style="margin-right: 1.5rem; color: var(--primary); font-size: 0.875rem; text-decoration: none; font-weight: 600;">Dashboard</a>
+            {% elif request.cookies.get('user_session') %}
+            <span style="margin-right: 1.5rem; color: var(--text-muted); font-size: 0.875rem;">Hi, {{
+                request.cookies.get('user_session') }}</span>
+            {% endif %}
+            <a href="/cart" class="btn btn-primary cart-icon">🛒 <span class="cart-count">{{ cart_count }}</span></a>
+        </nav>
+    </header>
+    <div class="container">
+        <div
+            style="display:flex; gap: 3rem; background:white; padding: 2rem; border-radius:12px; box-shadow: var(--shadow);">
+            <div style="flex:1;">
+                <div class="product-image-container" style="border-radius: 12px; margin-bottom: 1rem;">
+                    {% if product.image_url %}
+                    <img id="mainImage" src="{{ product.image_url }}" alt="{{ product.name }}">
+                    {% else %}
+                    <span class="product-placeholder" style="font-size: 5rem;">⚙️</span>
+                    {% endif %}
+                </div>
+                {% if product.back_image_url %}
+                <div style="display: flex; gap: 1rem;">
+                    <img src="{{ product.image_url }}" onclick="document.getElementById('mainImage').src=this.src"
+                        style="width: 80px; height: 80px; border-radius: 8px; cursor: pointer; border: 2px solid var(--primary);">
+                    <img src="{{ product.back_image_url }}" onclick="document.getElementById('mainImage').src=this.src"
+                        style="width: 80px; height: 80px; border-radius: 8px; cursor: pointer; border: 2px solid transparent;"
+                        onmouseover="this.style.borderColor='var(--primary)'"
+                        onmouseout="if(document.getElementById('mainImage').src.includes('{{ product.back_image_url }}')) this.style.borderColor='var(--primary)'; else this.style.borderColor='transparent'">
+                </div>
+                {% endif %}
+            </div>
+            <div style="flex:1;">
+                <h2 style="margin-bottom: 0.5rem;">{{ product.name }}</h2>
+                <div class="product-price" style="font-size: 2.5rem; margin-bottom: 1.5rem; color: var(--primary);">₹{{
+                    "%.2f"|format(product.rate or 0) }} <span style="font-size: 1rem; color: var(--text-muted);">/
+                        Piece</span></div>
+
+                <div
+                    style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #e2e8f0;">
+                    <h4 style="margin-bottom: 1rem; border-bottom: 2px solid var(--primary); display: inline-block;">
+                        Technical Specifications</h4>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 0.5rem 0; font-weight: 600; color: #64748b;">Quantity (Qty)</td>
+                            <td style="padding: 0.5rem 0; text-align: right;">{{ product.qty or 1 }}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 0.5rem 0; font-weight: 600; color: #64748b;">Weight (Kg)</td>
+                            <td style="padding: 0.5rem 0; text-align: right;">{{ "%.3f"|format(product.weight or 0) }}
+                                Kg</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                    <div style="background: #eff6ff; padding: 1rem; border-radius: 8px; border: 1px solid #dbeafe;">
+                        <h5 style="margin-bottom: 0.5rem; color: #1e40af;">Invoice Details</h5>
+                        <p style="font-size: 0.8rem; margin: 0.2rem 0;">RC Rate/Kg: <strong>₹{{
+                                product.rc_rate_kg_invoice or 0 }}</strong></p>
+                        <p style="font-size: 0.8rem; margin: 0.2rem 0;">Machining: <strong>₹{{
+                                product.machining_cost_invoice or 0 }}</strong></p>
+                        <p style="font-size: 0.8rem; margin: 0.2rem 0;">Rate/Piece: <strong>₹{{
+                                product.rate_piece_invoice or 0 }}</strong></p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem; color: #1e40af;">Selling Price: <strong>₹{{
+                                product.selling_price_invoice or 0 }}</strong></p>
+                    </div>
+                    <div style="background: #f1f5f9; padding: 1rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <h5 style="margin-bottom: 0.5rem; color: #475569;">Without Invoice</h5>
+                        <p style="font-size: 0.8rem; margin: 0.2rem 0;">RC Rate/Kg: <strong>₹{{
+                                product.rc_rate_kg_no_invoice or 0 }}</strong></p>
+                        <p style="font-size: 0.8rem; margin: 0.2rem 0;">Machining: <strong>₹{{
+                                product.machining_cost_no_invoice or 0 }}</strong></p>
+                        <p style="font-size: 0.8rem; margin: 0.2rem 0;">Rate/Piece: <strong>₹{{
+                                product.rate_piece_no_invoice or 0 }}</strong></p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem; color: #475569;">Selling Price: <strong>₹{{
+                                product.selling_price_no_invoice or 0 }}</strong></p>
+                    </div>
+                </div>
+
+                <form action="/add-to-cart/{{ product.id }}" method="post">
+                    <button type="submit" class="btn btn-primary" style="width:100%; padding:1rem;">Add to
+                        Order</button>
+                </form>
+            </div>
+        </div>
+        <div
+            style="margin-top: 3rem; background: white; padding: 2rem; border-radius: 12px; box-shadow: var(--shadow);">
+            <h3>Description</h3>
+            <p style="color: var(--text-muted); line-height: 1.8; margin-top: 1rem;">{{ product.description }}</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">LAKSHMI METAL WORKS</div>
+            <div class="footer-address">
+                SF. No 16 (59/1) Athipalayam Road<br>
+                Chinnavedampatti, Coimbatore - 641049
+            </div>
+            <div class="footer-contact">
+                Office: 0422 - 4274216 / 8754980211 | Mobile: 9843410413
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
