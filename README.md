@@ -49,3 +49,15 @@ A modern, fast, and elegant LAKSHMI METAL WORKS system with a shopping cart and 
 ## 🔐 Credentials
 - **Admin**: `admin` / `admin123`
 - **Unified Login URL**: [http://127.0.0.1:8000/login](http://127.0.0.1:8000/login)
+
+## 🌐 Deployment
+
+### Deploying to Render (Recommended)
+
+1. **GitHub**: Push your code to a GitHub repository.
+2. **Render**:
+   - Create a **New Web Service**.
+   - Connect your repo.
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+3. **Database**: Render's free tier has an ephemeral disk. To save products permanently, consider using Render's free **PostgreSQL** database and setting the `DATABASE_URL` environment variable in your service settings.

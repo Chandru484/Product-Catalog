@@ -8,9 +8,14 @@ import models, database, auth
 from database import engine, get_db
 import os
 
-models.Base.metadata.create_all(bind=engine)
-
 app = FastAPI()
+
+# Initialize DB and Admin on startup
+@app.on_event("startup")
+async def startup_event():
+    models.Base.metadata.create_all(bind=engine)
+    from init_db import init_admin
+    init_admin()
 
 # Mount static files
 os.makedirs("static/css", exist_ok=True)

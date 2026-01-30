@@ -19,26 +19,16 @@
         </div>
         <nav>
             {% if request.cookies.get('admin_session') == 'authenticated' %}
-            <span style="margin-right: 1.5rem; color: var(--text-muted); font-size: 0.875rem;">Hi, Admin</span>
-            <a href="/admin/dashboard"
-                style="margin-right: 1.5rem; color: var(--primary); font-size: 0.875rem; text-decoration: none; font-weight: 600;">Dashboard</a>
-            <a href="/change-password"
-                style="margin-right: 1.5rem; color: var(--text-muted); font-size: 0.875rem; text-decoration: none; font-weight: 600;">Change
-                Password</a>
-            <a href="/logout"
-                style="margin-right: 1.5rem; color: #ef4444; font-size: 0.875rem; text-decoration: none;">Logout</a>
+            <span class="user-info">Hi, Admin</span>
+            <a href="/admin/dashboard" class="nav-link primary">Dashboard</a>
+            <a href="/change-password" class="nav-link">Change Password</a>
+            <a href="/logout" class="nav-link danger">Logout</a>
             {% elif request.cookies.get('user_session') %}
-            <span style="margin-right: 1.5rem; color: var(--text-muted); font-size: 0.875rem;">Hi, {{
-                request.cookies.get('user_session') }}</span>
-            <a href="/change-password"
-                style="margin-right: 1.5rem; color: var(--text-muted); font-size: 0.875rem; text-decoration: none; font-weight: 600;">Change
-                Password</a>
-            <a href="/logout"
-                style="margin-right: 1.5rem; color: #ef4444; font-size: 0.875rem; text-decoration: none;">Logout</a>
+            <span class="user-info">Hi, {{ request.cookies.get('user_session') }}</span>
+            <a href="/change-password" class="nav-link">Change Password</a>
+            <a href="/logout" class="nav-link danger">Logout</a>
             {% else %}
-            <a href="/login"
-                style="margin-right: 1.5rem; color: var(--primary); font-size: 0.875rem; text-decoration: none; font-weight: 600;">Login
-                / Sign Up</a>
+            <a href="/login" class="nav-link primary">Login / Sign Up</a>
             {% endif %}
             <a href="/cart" class="btn btn-primary cart-icon">
                 🛒 <span class="cart-count">{{ cart_count }}</span>
@@ -79,11 +69,9 @@
                 <div class="product-info">
                     <div class="product-name">{{ product.name }}</div>
                     <div class="product-price">₹{{ "%.2f"|format(product.rate if product.rate else 0) }}</div>
-                    <p style="color: var(--text-muted); font-size: 0.875rem;">{{ product.description[:60] }}...</p>
-                    <div style="display:flex; gap: 0.5rem; margin-top: 1rem;">
-                        <a href="/product/{{ product.id }}" class="btn"
-                            style="background: #e2e8f0; color: var(--text-main);">Details</a>
-                        <form action="/add-to-cart/{{ product.id }}" method="post">
+                    <div class="product-actions">
+                        <a href="/product/{{ product.id }}" class="btn secondary-btn">Details</a>
+                        <form action="/add-to-cart/{{ product.id }}" method="post" style="flex: 1;">
                             <button type="submit" class="btn btn-primary">Add to Cart</button>
                         </form>
                     </div>
