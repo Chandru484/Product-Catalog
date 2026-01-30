@@ -1,63 +1,91 @@
 # LAKSHMI METAL WORKS - Product Catalog
 
-A modern, fast, and elegant LAKSHMI METAL WORKS system with a shopping cart and admin management.
+A modern, fast, and elegant product catalog system for LAKSHMI METAL WORKS, featuring a storefront for customers and a management dashboard for administrators.
 
 ## 🚀 Tech Stack
 
 - **Backend**: [FastAPI](https://fastapi.tiangolo.com/) (Python 3.12)
 - **Database**: SQLite with [SQLAlchemy](https://www.sqlalchemy.org/) ORM
-- **Authentication**: JWT & Passlib (Bcrypt) for secure Admin access
-- **Frontend**: HTML5, Vanilla CSS, Jinja2 Templates
-- **Styling**: Modern, premium design with micro-animations and responsive layouts
+- **Authentication**: Secure Admin access via Passlib (Bcrypt)
+- **Frontend**: HTML5, Vanilla CSS (Modern & Responsive), Jinja2 Templates
+- **Deployment**: Ready for [Render](https://render.com) or [Railway](https://railway.app)
 
 ## ✨ Features
 
-- **User Authentication**: Customers can create accounts, login, and logout.
-- **Storefront**: Vibrant product grid with Rupee (₹) pricing and detail views.
-- **Shopping Cart**: Real-time cart management and item tracking.
-- **Manual Checkout**: Secure checkout view displaying bank details for customer transfers.
-- **Admin Dashboard**: Full CRUD (Create, Read, Update, Delete) capabilities for the product catalog.
-- **Dual Login**: A unified login page (`/login`) for both customers and admins.
+- **Responsive Storefront**: Elegant product grid that works perfectly on Mobile, Tablet, and Desktop.
+- **Search System**: Fast product searching with a clean, centered search interface.
+- **Shopping Cart**: Real-time cart management for customers.
+- **Admin Dashboard**: Secure panel to Add, Update, and Archive/Restore products.
+- **Automatic Setup**: Database and Admin user are initialized automatically on first run.
+- **Deployment Ready**: Includes `Procfile` and `requirements.txt` for easy cloud hosting.
 
 ## 🛠️ Project Structure
 
-- `main.py`: Core API and route definitions.
-- `models.py`: Database schemas for Products and Admins.
-- `database.py`: SQLAlchemy connection and session management.
-- `auth.py`: Security utilities for password hashing and tokens.
-- `templates/`: Jinja2 HTML templates for all pages.
+- `main.py`: Core application logic and API routes.
+- `models.py`: Database schemas for Products, Users, and Admins.
+- `database.py`: SQLAlchemy configuration and cloud database support.
+- `auth.py`: Security utilities for password hashing.
+- `init_db.py`: Database initialization script.
 - `static/`: CSS styles and image assets.
-- `init_db.py`: Database initialization and admin creation script.
+- `templates/`: Jinja2 HTML templates for all pages.
+- `requirements.txt`: Python dependencies.
+- `Procfile`: Command for cloud hosting.
 
 ## ⚙️ Setup & Installation
 
-1. **Activate Virtual Environment**:
+1. **Clone the Repository**:
+   ```bash
+   git clone <your-repo-url>
+   cd "Product Catalog"
+   ```
+
+2. **Create & Activate Virtual Environment**:
    ```powershell
+   # Create the environment
+   python -m venv .venv
+   
+   # Activate it (Windows)
    & .\.venv\Scripts\Activate.ps1
    ```
 
-2. **Run Database Initialization**:
+3. **Install Dependencies**:
+   ```powershell
+   pip install -r requirements.txt
+   ```
+
+4. **Run Initialization**:
+   The app initializes itself automatically, but you can run it manually:
    ```powershell
    python init_db.py
    ```
 
-3. **Start the Production Server**:
+5. **Start the Development Server**:
    ```powershell
    uvicorn main:app --reload
    ```
 
+6. **Access the App**:
+   - Storefront: [http://127.0.0.1:8000/home](http://127.0.0.1:8000/home)
+   - Login: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+
+## ❓ Troubleshooting
+
+If your teammate says the project "isn't working", check these common steps:
+
+1. **Missing Dependencies**: Ensure they ran `pip install -r requirements.txt` inside an active virtual environment.
+2. **Database Initialization**: If the app fails to start or data is missing, ask them to run `python init_db.py` to create the admin user and tables.
+3. **Port Conflict**: If port 8000 is used by another app, they can run on a different port: `uvicorn main:app --reload --port 8080`.
+4. **Python Version**: Ensure they are using Python 3.9 or higher (3.12 recommended).
+
 ## 🔐 Credentials
-- **Admin**: `admin` / `admin123`
-- **Unified Login URL**: [http://127.0.0.1:8000/login](http://127.0.0.1:8000/login)
+- **Default Admin**: `admin` / `admin123`
 
-## 🌐 Deployment
+## 🌐 Deployment to Render
 
-### Deploying to Render (Recommended)
-
-1. **GitHub**: Push your code to a GitHub repository.
-2. **Render**:
-   - Create a **New Web Service**.
-   - Connect your repo.
+1. **Push to GitHub**: Push your latest code to your repository.
+2. **New Web Service**:
+   - Create a **New Web Service** on Render.
+   - Connect your GitHub repo.
    - **Build Command**: `pip install -r requirements.txt`
    - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-3. **Database**: Render's free tier has an ephemeral disk. To save products permanently, consider using Render's free **PostgreSQL** database and setting the `DATABASE_URL` environment variable in your service settings.
+
