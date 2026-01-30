@@ -4,11 +4,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Catalog</title>
+    <title>Catalog - LAKSHMI METAL WORKS</title>
     <link rel="stylesheet" href="/static/css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .home-search {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            margin-bottom: 3rem;
+        }
+
+        .search-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .custom-search-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .custom-search-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .custom-search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-search {
+            padding: 0 2rem;
+            border-radius: 16px;
+            font-weight: 700;
+        }
+
+        .product-grid-enhanced {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card-enhanced {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+            border: 1px solid #f1f5f9;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card-enhanced:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-image-wrapper {
+            aspect-ratio: 4/3;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            overflow: hidden;
+        }
+
+        .card-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card-enhanced:hover .card-image-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .home-search {
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+                border-radius: 20px;
+            }
+
+            .custom-search-form {
+                flex-direction: column;
+            }
+
+            .btn-search {
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .product-grid-enhanced {
+                grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+                gap: 1.25rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -19,16 +136,12 @@
         </div>
         <nav>
             {% if request.cookies.get('admin_session') == 'authenticated' %}
-            <span class="user-info">Hi, Admin</span>
             <a href="/admin/dashboard" class="nav-link primary">Dashboard</a>
-            <a href="/change-password" class="nav-link">Change Password</a>
             <a href="/logout" class="nav-link danger">Logout</a>
             {% elif request.cookies.get('user_session') %}
-            <span class="user-info">Hi, {{ request.cookies.get('user_session') }}</span>
-            <a href="/change-password" class="nav-link">Change Password</a>
             <a href="/logout" class="nav-link danger">Logout</a>
             {% else %}
-            <a href="/login" class="nav-link primary">Login / Sign Up</a>
+            <a href="/login" class="nav-link primary">Login</a>
             {% endif %}
             <a href="/cart" class="btn btn-primary cart-icon">
                 🛒 <span class="cart-count">{{ cart_count }}</span>
@@ -37,42 +150,45 @@
     </header>
 
     <div class="container">
-        <div class="search-container">
-            <form action="/home" method="get" class="search-form">
-                <input type="text" name="q" placeholder="Search products by name..." class="search-input"
+        <div class="home-search">
+            <h2 class="search-title">Discover Our Products</h2>
+            <form action="/home" method="get" class="custom-search-form">
+                <input type="text" name="q" placeholder="Ex: Bush Cover, Discharge Cover..." class="custom-search-input"
                     value="{{ search_query or '' }}">
-                <button type="submit" class="btn btn-primary">Search</button>
-                {% if search_query %}
-                <a href="/home" class="btn" style="background: #e2e8f0; color: var(--text-main);">Clear</a>
-                {% endif %}
+                <button type="submit" class="btn btn-primary btn-search">Search</button>
             </form>
         </div>
 
-        <div class="product-grid">
+        <div class="product-grid-enhanced">
             {% if not products %}
             <div class="empty-state">
                 <div style="font-size: 4rem; margin-bottom: 1rem;">🔍</div>
-                <h3>No products found</h3>
-                <p style="color: var(--text-muted);">We couldn't find anything matching "{{ search_query }}".</p>
-                <a href="/home" class="btn btn-primary" style="margin-top: 1rem;">View All Products</a>
+                <h3>No items found</h3>
+                <p style="color: var(--text-muted);">Try adjusting your search query.</p>
+                <a href="/home" class="btn btn-primary" style="margin-top: 1rem;">Show All</a>
             </div>
             {% endif %}
+
             {% for product in products %}
-            <div class="product-card">
-                <div class="product-image-container">
+            <div class="product-card-enhanced">
+                <div class="card-image-wrapper">
                     {% if product.image_url %}
                     <img src="{{ product.image_url }}" alt="{{ product.name }}">
                     {% else %}
                     <span class="product-placeholder">⚙️</span>
                     {% endif %}
                 </div>
-                <div class="product-info">
-                    <div class="product-name">{{ product.name }}</div>
-                    <div class="product-price">₹{{ "%.2f"|format(product.rate if product.rate else 0) }}</div>
-                    <div class="product-actions">
-                        <a href="/product/{{ product.id }}" class="btn secondary-btn">Details</a>
-                        <form action="/add-to-cart/{{ product.id }}" method="post" style="flex: 1;">
-                            <button type="submit" class="btn btn-primary">Add to Cart</button>
+                <div class="card-body">
+                    <div style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">
+                        {{ product.name }}</div>
+                    <div style="font-weight: 800; color: var(--primary); font-size: 1.25rem; margin-bottom: 1rem;">₹{{
+                        "%.2f"|format(product.rate or 0) }}</div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: auto;">
+                        <a href="/product/{{ product.id }}" class="btn secondary-btn"
+                            style="flex: 1; border-radius: 12px; font-weight: 700;">Details</a>
+                        <form action="/add-to-cart/{{ product.id }}" method="post" style="flex: 1.5;">
+                            <button type="submit" class="btn btn-primary"
+                                style="width: 100%; border-radius: 12px; font-weight: 700;">Add to Order</button>
                         </form>
                     </div>
                 </div>
@@ -84,33 +200,10 @@
     <footer>
         <div class="footer-content">
             <div class="footer-brand">LAKSHMI METAL WORKS</div>
-            <div class="footer-address">
-                SF. No 16 (59/1) Athipalayam Road<br>
-                Chinnavedampatti, Coimbatore - 641049
-            </div>
-            <div class="footer-contact">
-                Office: 0422 - 4274216 / 8754980211 | Mobile: 9843410413
-            </div>
+            <div style="margin-bottom: 1rem;">SF. No 16 (59/1) Athipalayam Road, Coimbatore</div>
+            <div style="font-size: 0.8125rem;">© 2026 High Quality Metal Manufacturing</div>
         </div>
     </footer>
-
-    <script>
-        function toggleImages(productId) {
-            const front = document.getElementById(`front-${productId}`);
-            const back = document.getElementById(`back-${productId}`);
-            const btn = event.target;
-
-            if (front.style.display === 'none') {
-                front.style.display = 'block';
-                back.style.display = 'none';
-                btn.innerText = 'View Back';
-            } else {
-                front.style.display = 'none';
-                back.style.display = 'block';
-                btn.innerText = 'View Front';
-            }
-        }
-    </script>
 </body>
 
 </html>

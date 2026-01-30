@@ -24,9 +24,17 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
-# Mock Cart for simplicity (in-memory for this session)
+# Mock Carts (dictionary keyed by session)
 # In a real app, use sessions or a database table
-cart = []
+carts = {}
+
+def get_session_cart(request: Request):
+    session = request.cookies.get("user_session") or request.cookies.get("admin_session")
+    if not session:
+        return []
+    if session not in carts:
+        carts[session] = []
+    return carts[session]
 
 @app.get("/", response_class=HTMLResponse)
 async def login_page(request: Request):
@@ -45,7 +53,8 @@ async def home(request: Request, q: str = None, db: Session = Depends(get_db)):
         query = query.filter(models.Product.name.contains(q))
     
     products = query.all()
-    return templates.TemplateResponse("index.html", {"request": request, "products": products, "cart_count": len(cart), "search_query": q})
+    current_cart = get_session_cart(request)
+    return templates.TemplateResponse("index.html", {"request": request, "products": products, "cart_count": len(current_cart), "search_query": q})
 
 @app.get("/product/{product_id}", response_class=HTMLResponse)
 async def product_detail(request: Request, product_id: int, db: Session = Depends(get_db)):
@@ -55,37 +64,41 @@ async def product_detail(request: Request, product_id: int, db: Session = Depend
     product = db.query(models.Product).filter(models.Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
-    return templates.TemplateResponse("product.html", {"request": request, "product": product, "cart_count": len(cart)})
+    current_cart = get_session_cart(request)
+    return templates.TemplateResponse("product.html", {"request": request, "product": product, "cart_count": len(current_cart)})
 
 @app.post("/add-to-cart/{product_id}")
-async def add_to_cart(product_id: int, db: Session = Depends(get_db)):
+async def add_to_cart(request: Request, product_id: int, db: Session = Depends(get_db)):
+    current_cart = get_session_cart(request)
     product = db.query(models.Product).filter(models.Product.id == product_id).first()
     if product:
         # Check if product already in cart
-        for item in cart:
+        for item in current_cart:
             if item["product"].id == product_id:
                 item["quantity"] += 1
                 break
         else:
-            cart.append({"product": product, "quantity": 1})
+            current_cart.append({"product": product, "quantity": 1})
     return RedirectResponse(url="/home", status_code=status.HTTP_303_SEE_OTHER)
 
 @app.post("/remove-from-cart/{product_id}")
-async def remove_from_cart(product_id: int):
-    global cart
-    cart = [item for item in cart if item["product"].id != product_id]
+async def remove_from_cart(request: Request, product_id: int):
+    session = request.cookies.get("user_session") or request.cookies.get("admin_session")
+    if session and session in carts:
+        carts[session] = [item for item in carts[session] if item["product"].id != product_id]
     return RedirectResponse(url="/cart", status_code=status.HTTP_303_SEE_OTHER)
 
 @app.post("/update-cart-quantity/{product_id}")
-async def update_cart_quantity(product_id: int, action: str = Form(...)):
-    for item in cart:
+async def update_cart_quantity(request: Request, product_id: int, action: str = Form(...)):
+    current_cart = get_session_cart(request)
+    for item in current_cart:
         if item["product"].id == product_id:
             if action == "increase":
                 item["quantity"] += 1
             elif action == "decrease":
                 item["quantity"] -= 1
                 if item["quantity"] <= 0:
-                    cart.remove(item)
+                    current_cart.remove(item)
             break
     return RedirectResponse(url="/cart", status_code=status.HTTP_303_SEE_OTHER)
 
@@ -93,8 +106,9 @@ async def update_cart_quantity(product_id: int, action: str = Form(...)):
 async def view_cart(request: Request):
     if not request.cookies.get("user_session") and not request.cookies.get("admin_session"):
         return RedirectResponse(url="/")
-    total = sum(item["product"].rate * item["quantity"] for item in cart if item["product"].rate)
-    return templates.TemplateResponse("cart.html", {"request": request, "cart": cart, "total": total})
+    current_cart = get_session_cart(request)
+    total = sum(item["product"].rate * item["quantity"] for item in current_cart if item["product"].rate)
+    return templates.TemplateResponse("cart.html", {"request": request, "cart": current_cart, "total": total})
 
 @app.get("/checkout", response_class=HTMLResponse)
 async def checkout(request: Request):
@@ -104,12 +118,13 @@ async def checkout(request: Request):
 
 @app.post("/user/login")
 async def user_login(request: Request, email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
+    email = email.strip()
     user = db.query(models.User).filter(models.User.email == email).first()
     if not user or not auth.verify_password(password, user.hashed_password):
-        return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid email or password"})
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid email or password", "active_tab": "customer"})
     
     response = RedirectResponse(url="/home", status_code=status.HTTP_303_SEE_OTHER)
-    response.set_cookie(key="user_session", value=user.email)
+    response.set_cookie(key="user_session", value=user.email, httponly=True, samesite="lax")
     return response
 
 @app.get("/signup", response_class=HTMLResponse)
@@ -118,6 +133,8 @@ async def signup_page(request: Request):
 
 @app.post("/signup")
 async def signup(request: Request, email: str = Form(...), password: str = Form(...), full_name: str = Form(...), db: Session = Depends(get_db)):
+    email = email.strip()
+    full_name = full_name.strip()
     existing_user = db.query(models.User).filter(models.User.email == email).first()
     if existing_user:
         return templates.TemplateResponse("signup.html", {"request": request, "error": "Email already registered"})
@@ -179,12 +196,13 @@ async def old_admin_login():
 
 @app.post("/admin/login")
 async def admin_login(request: Request, username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
+    username = username.strip()
     admin = db.query(models.Admin).filter(models.Admin.username == username).first()
     if not admin or not auth.verify_password(password, admin.hashed_password):
-        return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials", "active_tab": "admin"})
     
     response = RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_303_SEE_OTHER)
-    response.set_cookie(key="admin_session", value="authenticated")
+    response.set_cookie(key="admin_session", value="authenticated", httponly=True, samesite="lax")
     return response
 
 @app.get("/admin/dashboard", response_class=HTMLResponse)

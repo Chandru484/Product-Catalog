@@ -6,76 +6,266 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - LAKSHMI METAL WORKS</title>
     <link rel="stylesheet" href="/static/css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --primary-gradient: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            padding: 1rem;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 440px;
+            perspective: 1000px;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            box-sizing: border-box;
+            transition: transform 0.3s ease;
+        }
+
         .tabs {
             display: flex;
-            gap: 1rem;
+            gap: 0.5rem;
             margin-bottom: 2rem;
-            border-bottom: 1px solid var(--border);
+            background: rgba(0, 0, 0, 0.03);
+            padding: 0.25rem;
+            border-radius: 12px;
         }
 
         .tab {
-            padding: 0.75rem 1.5rem;
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
             cursor: pointer;
             color: var(--text-muted);
             font-weight: 600;
-            border-bottom: 2px solid transparent;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            font-size: 0.9375rem;
         }
 
         .tab.active {
+            background: white;
             color: var(--primary);
-            border-bottom-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .login-form-container {
             display: none;
+            animation: fadeIn 0.4s ease-out;
         }
 
         .login-form-container.active {
             display: block;
         }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .custom-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .custom-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            padding: 0.5rem;
+            line-height: 1;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-customer {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-customer:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-admin {
+            background: #1e293b;
+            color: white;
+        }
+
+        .btn-admin:hover {
+            background: #0f172a;
+            transform: translateY(-2px);
+        }
+
+        .error-toast {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 0.875rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            text-align: center;
+            border: 1px solid #fecaca;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        .footer-minimal {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1.25rem;
+                justify-content: flex-start;
+                padding-top: 2rem;
+            }
+
+            .glass-card {
+                padding: 1.75rem;
+                border-radius: 20px;
+            }
+
+            .footer-minimal {
+                margin-top: 2rem;
+            }
+        }
     </style>
 </head>
 
-<body
-    style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
-    <div class="container" style="max-width: 450px; margin: 0;">
-        <div class="admin-form"
-            style="padding: 3rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.8); backdrop-filter: blur(10px);">
+<body>
+    <div class="login-wrapper">
+        <div class="glass-card">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h2 style="margin: 0; font-size: 1.5rem; letter-spacing: -0.025em; color: var(--text-main);">Welcome
+                    Back</h2>
+                <p style="margin: 0.5rem 0 0; color: var(--text-muted); font-size: 0.875rem;">Sign in to your account
+                </p>
+            </div>
+
             <div class="tabs">
-                <div class="tab active" id="customer-tab" onclick="switchTab('customer')">Customer</div>
-                <div class="tab" id="admin-tab" onclick="switchTab('admin')">Admin</div>
+                <div class="tab {% if not active_tab or active_tab == 'customer' %}active{% endif %}" id="customer-tab"
+                    onclick="switchTab('customer')">Customer</div>
+                <div class="tab {% if active_tab == 'admin' %}active{% endif %}" id="admin-tab"
+                    onclick="switchTab('admin')">Admin</div>
             </div>
 
             {% if error %}
-            <div
-                style="background: #fee2e2; color: #dc2626; padding: 0.75rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.875rem; text-align: center; border: 1px solid #fecaca;">
-                {{ error }}
-            </div>
+            <div class="error-toast">{{ error }}</div>
             {% endif %}
 
             <!-- Customer Login Form -->
-            <div id="customer-form" class="login-form-container active">
+            <div id="customer-form"
+                class="login-form-container {% if not active_tab or active_tab == 'customer' %}active{% endif %}">
                 <form action="/user/login" method="post">
-                    <div style="margin-bottom: 1.25rem;">
-                        <label
-                            style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Email
-                            Address</label>
-                        <input type="email" name="email" placeholder="you@example.com" class="input-field"
-                            style="margin-bottom: 0;" required>
+                    <div class="input-group">
+                        <label class="input-label">Email Address</label>
+                        <input type="email" name="email" placeholder="you@example.com" class="custom-input" required>
                     </div>
-                    <div style="margin-bottom: 2rem;">
-                        <label
-                            style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Password</label>
-                        <div class="password-container">
-                            <input type="password" name="password" id="customer-password" placeholder="••••••••"
-                                class="input-field" style="margin-bottom: 0;" required>
-                            <span class="password-toggle" onclick="togglePassword('customer-password', this)">👁️</span>
+                    <div class="input-group">
+                        <label class="input-label">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" name="password" id="customer-password" placeholder="Enter password"
+                                class="custom-input" required>
+                            <button type="button" class="toggle-btn"
+                                onclick="togglePassword('customer-password', this)">👁️</button>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%; padding: 1rem;">Customer Sign
-                        In</button>
+                    <button type="submit" class="btn-submit btn-customer">Sign In as Customer</button>
                     <p style="text-align: center; margin-top: 1.5rem; font-size: 0.875rem; color: var(--text-muted);">
                         New here? <a href="/signup"
                             style="color: var(--primary); font-weight: 600; text-decoration: none;">Create an
@@ -85,33 +275,30 @@
             </div>
 
             <!-- Admin Login Form -->
-            <div id="admin-form" class="login-form-container">
+            <div id="admin-form" class="login-form-container {% if active_tab == 'admin' %}active{% endif %}">
                 <form action="/admin/login" method="post">
-                    <div style="margin-bottom: 1.25rem;">
-                        <label
-                            style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Admin
-                            Username</label>
-                        <input type="text" name="username" placeholder="admin" class="input-field"
-                            style="margin-bottom: 0;" required>
+                    <div class="input-group">
+                        <label class="input-label">Admin Username</label>
+                        <input type="text" name="username" placeholder="admin" class="custom-input" required>
                     </div>
-                    <div style="margin-bottom: 2rem;">
-                        <label
-                            style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">Admin
-                            Password</label>
-                        <div class="password-container">
-                            <input type="password" name="password" id="admin-password" placeholder="••••••••"
-                                class="input-field" style="margin-bottom: 0;" required>
-                            <span class="password-toggle" onclick="togglePassword('admin-password', this)">👁️</span>
+                    <div class="input-group">
+                        <label class="input-label">Admin Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" name="password" id="admin-password" placeholder="Enter password"
+                                class="custom-input" required>
+                            <button type="button" class="toggle-btn"
+                                onclick="togglePassword('admin-password', this)">👁️</button>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary"
-                        style="width:100%; padding: 1rem; background: #334155;">Admin Sign In</button>
+                    <button type="submit" class="btn-submit btn-admin">Sign In as Admin</button>
                 </form>
             </div>
+        </div>
 
-            <div style="text-align: center; margin-top: 2rem;">
-                <p style="color: var(--text-muted); font-size: 0.875rem;">Join us and start shopping today.</p>
-            </div>
+        <div class="footer-minimal">
+            <div style="font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">LAKSHMI METAL WORKS</div>
+            <div>SF. No 16 (59/1) Athipalayam Road, Chinnavedampatti, Coimbatore</div>
+            <div style="margin-top: 0.25rem;">© 2026 All Rights Reserved</div>
         </div>
     </div>
 
@@ -119,35 +306,21 @@
         function switchTab(type) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.login-form-container').forEach(f => f.classList.remove('active'));
-
             document.getElementById(type + '-tab').classList.add('active');
             document.getElementById(type + '-form').classList.add('active');
         }
 
-        function togglePassword(inputId, toggle) {
+        function togglePassword(inputId, btn) {
             const input = document.getElementById(inputId);
             if (input.type === 'password') {
                 input.type = 'text';
-                toggle.textContent = '🔒';
+                btn.textContent = '🔒';
             } else {
                 input.type = 'password';
-                toggle.textContent = '👁️';
+                btn.textContent = '👁️';
             }
         }
     </script>
-
-    <footer>
-        <div class="footer-content">
-            <div class="footer-brand">LAKSHMI METAL WORKS</div>
-            <div class="footer-address">
-                SF. No 16 (59/1) Athipalayam Road<br>
-                Chinnavedampatti, Coimbatore - 641049
-            </div>
-            <div class="footer-contact">
-                Office: 0422 - 4274216 / 8754980211 | Mobile: 9843410413
-            </div>
-        </div>
-    </footer>
 </body>
 
 </html>
